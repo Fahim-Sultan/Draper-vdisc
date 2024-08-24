@@ -1,0 +1,31 @@
+import h5py
+import pandas as pd
+
+file_path = 'C:/Users/Fahim/Downloads/New folder/VDISC_train.hdf5'
+
+with h5py.File(file_path, 'r') as hdf:
+
+    print("Keys in the file:")
+    print(list(hdf.keys()))
+
+    functionSource = hdf['functionSource'][:]
+    CWE_119 = hdf['CWE-119'][:]
+    CWE_120 = hdf['CWE-120'][:]
+    CWE_469 = hdf['CWE-469'][:]
+    CWE_476 = hdf['CWE-476'][:]
+    CWE_other = hdf['CWE-other'][:]
+
+data = pd.DataFrame({
+    'functionSource': [code.decode('utf-8') for code in functionSource], 
+    'CWE-119': CWE_119,
+    'CWE-120': CWE_120,
+    'CWE-469': CWE_469,
+    'CWE-476': CWE_476,
+    'CWE-other': CWE_other
+})
+
+data['label'] = data[['CWE-119', 'CWE-120', 'CWE-469', 'CWE-476', 'CWE-other']].idxmax(axis=1)
+
+csvh = 'C:/Users/Fahim/Downloads/New folder/dataset.csv'
+
+data.to_csv(csvh, index=False)
